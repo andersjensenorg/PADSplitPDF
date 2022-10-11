@@ -1,0 +1,21 @@
+Display.SelectFileDialog.SelectFiles Title: $'''Provide the path of the PDF you want to split''' InitialDirectory: $'''C:\\Users\\Anders Jensen\\OneDrive - Anders Jensen\\Desktop''' IsTopMost: True CheckIfFileExists: True SelectedFiles=> SelectedPDFFiles ButtonPressed=> ButtonPressed
+LOOP FOREACH SelectedPDFFile IN SelectedPDFFiles
+    SET PageCount TO 1
+    Variables.CreateNewList List=> ExtractedPDFFiles
+    LOOP WHILE (2) = (2)
+        Pdf.ExtractPages PDFFile: SelectedPDFFile PageSelection: PageCount ExtractedPDFPath: $'''%SelectedPDFFile.Directory%\\Splitted_%SelectedPDFFile.Name%''' IfFileExists: Pdf.IfFileExists.AddSequentialSuffix ExtractedPDFFile=> ExtractedPDF
+                ON ERROR PageOutOfBoundsError
+                    GOTO OutOfBounds
+                ON ERROR
+        
+                END
+        Variables.AddItemToList Item: ExtractedPDF.FullName List: ExtractedPDFFiles
+        SET PageCount TO PageCount + 1
+    END
+    LABEL OutOfBounds
+    Display.ShowMessageDialog.ShowMessage Message: $'''Your PDF file got splitted into %ExtractedPDFFiles.Count% seperate PDF files.
+
+Find them here: %SelectedPDFFile.Directory%''' Icon: Display.Icon.None Buttons: Display.Buttons.OK DefaultButton: Display.DefaultButton.Button1 IsTopMost: False ButtonPressed=> ButtonPressed2
+END
+/# Solution by Anders Jensen
+Twitter: @andersjensenorg#/
